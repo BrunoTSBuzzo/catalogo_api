@@ -11,7 +11,6 @@ READ_DOT_ENV_FILE = env.bool("DJANGO_READ_DOT_ENV_FILE", default=False)
 if READ_DOT_ENV_FILE:
     env.read_env(str(ROOT_DIR.path('.env')))
 
-
 DEBUG = env.bool("DJANGO_DEBUG", False)
 
 TIME_ZONE = "America/Sao_Paulo"
@@ -30,7 +29,6 @@ LOCALE_PATHS = [
     os.path.join(ROOT_DIR, 'locale')
 ]
 
-
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql',
@@ -44,11 +42,9 @@ DATABASES = {
 
 DATABASES["default"]["ATOMIC_REQUESTS"] = True
 
-
 ROOT_URLCONF = "config.urls"
 
 WSGI_APPLICATION = "config.wsgi.application"
-
 
 DJANGO_APPS = [
     "django.contrib.auth",
@@ -61,6 +57,7 @@ DJANGO_APPS = [
     "django.contrib.admin",
 ]
 THIRD_PARTY_APPS = [
+    'rest_framework',
 ]
 
 LOCAL_APPS = [
@@ -68,9 +65,7 @@ LOCAL_APPS = [
 
 INSTALLED_APPS = DJANGO_APPS + THIRD_PARTY_APPS + LOCAL_APPS
 
-
 MIGRATION_MODULES = {"sites": "catalogo_api.contrib.sites.migrations"}
-
 
 AUTHENTICATION_BACKENDS = [
     "django.contrib.auth.backends.ModelBackend",
@@ -98,7 +93,6 @@ AUTH_PASSWORD_VALIDATORS = [
     {"NAME": "django.contrib.auth.password_validation.NumericPasswordValidator"},
 ]
 
-
 MIDDLEWARE = [
     "django.middleware.security.SecurityMiddleware",
     "whitenoise.middleware.WhiteNoiseMiddleware",
@@ -111,7 +105,6 @@ MIDDLEWARE = [
     "django.middleware.common.BrokenLinkEmailsMiddleware",
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
 ]
-
 
 STATIC_ROOT = str(ROOT_DIR('staticfiles'))
 STATIC_URL = "/static/"
@@ -126,7 +119,6 @@ STATICFILES_FINDERS = [
 
 MEDIA_ROOT = str(APPS_DIR('media'))
 MEDIA_URL = '/media/'
-
 
 TEMPLATES = [
     {
@@ -154,7 +146,6 @@ TEMPLATES = [
     }
 ]
 
-
 FORM_RENDERER = "django.forms.renderers.TemplatesSetting"
 
 CRISPY_TEMPLATE_PACK = "bootstrap4"
@@ -171,7 +162,6 @@ SECURE_BROWSER_XSS_FILTER = True
 
 X_FRAME_OPTIONS = "DENY"
 
-
 EMAIL_BACKEND = env(
     "DJANGO_EMAIL_BACKEND",
     default="django.core.mail.backends.smtp.EmailBackend",
@@ -179,13 +169,11 @@ EMAIL_BACKEND = env(
 
 EMAIL_TIMEOUT = 5
 
-
 ADMIN_URL = "admin/"
 
 ADMINS = [("""Bruno Tomas Buzzo""", "bruno.tomas@live.com")]
 
 MANAGERS = ADMINS
-
 
 LOGGING = {
     "version": 1,
@@ -206,3 +194,22 @@ LOGGING = {
     "root": {"level": "INFO", "handlers": ["console"]},
 }
 
+REST_FRAMEWORK = {
+    'DEFAULT_PERMISSION_CLASSES': (
+        'rest_framework.permissions.IsAuthenticated',
+    ),
+    'DEFAULT_AUTHENTICATION_CLASSES': (
+        'rest_framework_jwt.authentication.JSONWebTokenAuthentication',
+        'rest_framework.authentication.SessionAuthentication',
+        'rest_framework.authentication.BasicAuthentication',
+        'rest_framework.authentication.TokenAuthentication',
+    ),
+    'DATETIME_FORMAT': '%d/%m/%Y %H:%M:%S',
+    'DATETIME_INPUT_FORMATS': ['%d/%m/%Y %H:%M:%S', 'iso-8601'],
+    'DATE_FORMAT': '%d/%m/%Y',
+    'DATE_INPUT_FORMATS': ['%d/%m/%Y', 'iso-8601'],
+    'TIME_FORMAT': '%H:%M:%S',
+    'TIME_INPUT_FORMATS': ['%H:%M:%S', 'iso-8601'],
+    'DEFAULT_PAGINATION_CLASS': 'rest_framework.pagination.LimitOffsetPagination',
+    'PAGE_SIZE': 100
+}
